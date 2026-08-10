@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact Info - CP Chat</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="contact-page">
+    <div class="contact-header">
+        <button onclick="history.back()">←</button>
+        <h2>Contact Info</h2>
+    </div>
+    <div class="contact-profile">
+        <img id="contactImage" src="images/cp-logo.jpeg" class="contact-avatar">
+        <h2 id="contactName">Unknown User</h2>
+        <p id="contactUsername">@unknown</p>
+    </div>
+    <div class="contact-section">
+        <h3>About</h3>
+        <p id="contactAbout">Hey there! I'm using CP Chat.</p>
+    </div>
+    <div class="contact-section">
+        <h3>Phone Number</h3>
+        <p id="contactPhone">Not available</p>
+    </div>
+    <div class="contact-section">
+        <button id="voiceCallInfo">📞 Voice Call</button>
+        <button id="videoCallInfo">📹 Video Call</button>
+    </div>
+    <div class="contact-section">
+        <button id="muteBtn">🔕 Mute Notifications</button>
+        <button id="blockBtn">🚫 Block User</button>
+        <button id="deleteBtn">🗑 Delete Chat</button>
+    </div>
+</div>
+<script>
+document.getElementById("contactName").textContent =
+localStorage.getItem("chatName") || "Unknown User";
+document.getElementById("contactUsername").textContent =
+localStorage.getItem("chatUsername") || "@unknown";
+document.getElementById("contactAbout").textContent =
+localStorage.getItem("chatAbout") || "Hey there! I'm using CP Chat.";
+document.getElementById("contactPhone").textContent =
+localStorage.getItem("chatPhone") || "Not available";
+document.getElementById("voiceCallInfo").onclick = () => {
+    window.location.href = "voicecall.html";
+};
+document.getElementById("videoCallInfo").onclick = () => {
+    window.location.href = "videocall.html";
+};
+document.getElementById("muteBtn").onclick = () => {
+    alert("Notifications muted.");
+};
+document.getElementById("blockBtn").onclick = () => {
+    if(confirm("Block this user?")){
+        alert("User blocked.");
+    }
+};
+document.getElementById("deleteBtn").onclick = () => {
+    if(confirm("Delete this chat?")){
+        localStorage.removeItem("chatHistory");
+        alert("Chat deleted.");
+        history.back();
+    }
+};
+</script>
+</body>
+</html>
