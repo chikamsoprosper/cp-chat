@@ -33,6 +33,7 @@ let messages = document.getElementById("messages");
 let socket;
 if (messages) {
     socket = io("https://cp-chat.onrender.com");
+	console.log("socket created:", socket);
     socket.on("chat message", function (text) {
         let newMessage = document.createElement("div");
         newMessage.className = "received";
