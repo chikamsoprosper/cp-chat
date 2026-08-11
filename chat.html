@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CP Chat</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="chat-page" id="chat-page">
+<div class="chat-header">
+    <button id="backBtn">←</button>
+<div id="contactInfoBtn"
+class="contact-info-btn">
+    <img src="images/cp-logo.jpeg" class="avatar-img" alt="Profile">
+    <div class="chat-info">
+        <h3 id="chatName">Unknown User</h3>
+		<p id="typingStatus" class="typing-status"></p>
+        <p id="chatUsername">@unknown</p>
+    </div>
+</div>
+<div class="chat-actions">
+	<button id="voiceCallBtn">📞</button>
+	<button id="videoCallBtn">📹</button>
+	<button id="chatMenuBtn">⋮</button>
+    </div>
+</div>
+	<div class="chat-search">
+    <input
+        type="text"
+        id="searchMessage"
+        placeholder="Search messages...">
+</div>
+    <div class="messages" id="messages">
+        <div class="received">
+            Hi 👋
+			<span class="message-info">
+			    10:44 AM    
+			</span>
+        </div>
+        <div class="sent">
+            Hello Alex!
+			<span class="message-info">
+			    10:45 AM ✓✓
+			</span>
+        </div>
+    </div>
+    <div class="message-box">
+    <button class="icon-btn" id="emojiBtn">😊</button>
+    <button class="icon-btn" id="attachBtn">📎</button>
+	<input
+	    type="file"
+		id="attachInput"
+		hidden
+		multiple>
+	<input
+	    type="file"
+		id="fileInput"
+		hidden>
+    <input
+        type="text"
+        id="messageInput"
+        placeholder="Type a message...">
+    <button class="icon-btn" id="cameraBtn">📷</button>
+	<input
+    type="file"
+    id="cameraInput"
+    accept="image/*"
+    capture="environment"
+    hidden>
+	<button class="icon-btn" id="voiceBtn">🎤</button>
+    <button id="sendBtn">➤</button>
+</div>
+</div>
+<div id="emojiPicker" class="emoji-picker">
+    <span>😀</span>
+    <span>😂</span>
+    <span>😍</span>
+    <span>😎</span>
+    <span>🥳</span>
+    <span>😭</span>
+    <span>😡</span>
+    <span>👍</span>
+    <span>❤️</span>
+    <span>🔥</span>
+    <span>🎉</span>
+    <span>🙏</span>
+</div>
+<div id="imagePreview" class="image-preview hidden">
+    <img id="previewImg" src="" alt="Preview">
+    <div class="preview-buttons">
+        <button id="cancelImage">Cancel</button>
+        <button id="sendImage">Send</button>
+    </div>
+</div>
+<div id="chatMenu" class="more-menu">
+    <div class="menu-item">View Contact</div>
+    <div class="menu-item">Search</div>
+    <div class="menu-item">Media, Links & Docs</div>
+    <div class="menu-item">Mute Notifications</div>
+    <div class="menu-item">Wallpaper</div>
+    <div class="menu-item">Clear Chat</div>
+    <div class="menu-item">Delete Chat</div>
+</div>
+<script src="/socket.io/socket.io.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
