@@ -1,3 +1,4 @@
+console.log("CP CHAT SCRIPT IS RUNNING");
 // Notification permission
 if ("Notification" in window && Notification.permission !== "granted") {
     Notification.requestPermission();
