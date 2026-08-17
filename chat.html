@@ -102,8 +102,47 @@ class="contact-info-btn">
     <div class="menu-item">Clear Chat</div>
     <div class="menu-item">Delete Chat</div>
 </div>
-<script src="https://cp-chat.onrender.com/socket.io/socket.io.js"></script>
-<script src="script.js"></script>
+<script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+<script>
+    let socketServer;
+    if (
+        window.location.hostname === "localhost" ||
+        window.location.hostname === "127.0.0.1"
+    ) {
+        socketServer = "http://localhost:3000";
+    } else {
+        socketServer = "https://cp-chat.onrender.com";
+    }
+    window.chatSocket = io(socketServer);
+    window.chatSocket.on("connect", function () {
+        console.log("Connected to CP Chat server:", socketServer);
+    });
+    window.chatSocket.on("disconnect", function () {
+        console.log("Disconnected from CP Chat server");
+    });
+    window.chatSocket.on("chat message", function (msg) {
+        console.log("Message received:", msg);
+	const messages = document.getElementById("messages");
+    if (!messages) return;
+    const newMessage = document.createElement("div");
+    newMessage.className = "sent";
+    const now = new Date();
+    let hours = now.getHours();
+    const minutes = now.getMinutes().toString().padStart(2, "0");
+    const period = hours >= 12 ? "PM" : "AM";
+    hours = hours % 12;
+    if (hours === 0) hours = 12;
+    newMessage.innerHTML = `
+        <div class="message-text">${msg}</div>
+        <div class="message-info">
+            ${hours}:${minutes}
+            <span class="tick">✓✓</span>
+        </div>
+    `;
+    messages.appendChild(newMessage);
+    messages.scrollTop = messages.scrollHeight;	
+    });
+</script>
 <script src="script.js"></script>
 </body>
 </html>

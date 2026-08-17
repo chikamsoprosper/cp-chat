@@ -30,33 +30,6 @@ if (forwarded && messageInput) {
     localStorage.removeItem("forwardMessage");
 }
 let messages = document.getElementById("messages");
-let socket;
-if (sendBtn && messageInput && messages) {
-    sendBtn.addEventListener("click", function () {
-        const text = messageInput.value.trim();
-        if (text === "") {
-            return;
-        }
-        // Send message to the Render Socket.IO server
-        if (socket && socket.connected) {
-            socket.emit("chat message", text);
-        } else {
-            console.error("Socket is not connected.");
-            alert("Not connected to CP Chat server.");
-            return;
-        }
-        // Clear input
-        messageInput.value = "";
-    });
-    // Allow Enter key to send
-    messageInput.addEventListener("keydown", function (event) {
-
-        if (event.key === "Enter") {
-            event.preventDefault();
-            sendBtn.click();
-        }
-    });
-}
 if (backBtn) {
     backBtn.addEventListener("click", function () {
         window.location.href = "home.html";
@@ -202,7 +175,11 @@ newMessage.addEventListener("click", function (event) {
         "\nStatus: " + status
     );
 });
-    socket.emit("chat message", text);
+if (!window.chatSocket || !window.chatSocket.connected) {
+    alert("Not connected to CP Chat server.");
+    return;
+}
+    window.chatSocket.emit("chat message", text);
 		chatHistory.push({
     type: "text",
     text: text,
