@@ -1,4 +1,3 @@
-console.log("CP CHAT SCRIPT IS RUNNING");
 // Notification permission
 if ("Notification" in window && Notification.permission !== "granted") {
     Notification.requestPermission();
@@ -32,17 +31,30 @@ if (forwarded && messageInput) {
 }
 let messages = document.getElementById("messages");
 let socket;
-if (messages) {
-    socket = io("https://cp-chat.onrender.com");
-	console.log("socket created:", socket);
-    socket.on("chat message", function (text) {
-        let newMessage = document.createElement("div");
-        newMessage.className = "received";
-        newMessage.innerHTML = `
-            <div class="message-text">${text}</div>
-        `;
-		messages.appendChild(newMessage);
-        messages.scrollTop = messages.scrollHeight;
+if (sendBtn && messageInput && messages) {
+    sendBtn.addEventListener("click", function () {
+        const text = messageInput.value.trim();
+        if (text === "") {
+            return;
+        }
+        // Send message to the Render Socket.IO server
+        if (socket && socket.connected) {
+            socket.emit("chat message", text);
+        } else {
+            console.error("Socket is not connected.");
+            alert("Not connected to CP Chat server.");
+            return;
+        }
+        // Clear input
+        messageInput.value = "";
+    });
+    // Allow Enter key to send
+    messageInput.addEventListener("keydown", function (event) {
+
+        if (event.key === "Enter") {
+            event.preventDefault();
+            sendBtn.click();
+        }
     });
 }
 if (backBtn) {
@@ -943,4 +955,67 @@ if (contactInfoBtn) {
         window.location.href =
 "contact-info.html";
     };
+}
+// ===============================
+// CP CHAT SIGN UP
+// ===============================
+const signupBtn = document.getElementById("signupBtn");
+if (signupBtn) {
+    signupBtn.addEventListener("click", async function () {
+        const name = document.getElementById("signupName").value.trim();
+        const username = document.getElementById("signupUsername").value.trim();
+        const email = document.getElementById("signupEmail").value.trim();
+        const password = document.getElementById("signupPassword").value;
+        const signupMessage = document.getElementById("signupMessage");
+        if (!name || !username || !email || !password) {
+            signupMessage.textContent = "Please fill in all fields.";
+            signupMessage.style.color = "red";
+            return;
+        }
+        if (password.length < 6) {
+            signupMessage.textContent = "Password must be at least 6 characters.";
+            signupMessage.style.color = "red";
+            return;
+        }
+        signupBtn.disabled = true;
+        signupBtn.textContent = "Creating account...";
+        try {
+            const response = await fetch(
+                "https://cp-chat.onrender.com/signup",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        name: name,
+                        username: username,
+                        email: email,
+                        password: password
+                    })
+                }
+            );
+            const data = await response.json();
+            if (response.ok) {
+                signupMessage.textContent = "Account created successfully!";
+                signupMessage.style.color = "green";
+                setTimeout(function () {
+                    window.location.href = "login.html";
+                }, 1500);
+            } else {
+                signupMessage.textContent =
+                    data.message || "Unable to create account.";
+                signupMessage.style.color = "red";
+                signupBtn.disabled = false;
+                signupBtn.textContent = "Sign Up";
+            }
+        } catch (error) {
+            console.error("Signup error:", error);
+            signupMessage.textContent =
+                "Cannot connect to CP Chat server.";
+            signupMessage.style.color = "red";
+            signupBtn.disabled = false;
+            signupBtn.textContent = "Sign Up";
+        }
+    });
 }
