@@ -102,69 +102,87 @@ class="contact-info-btn">
     <div class="menu-item">Clear Chat</div>
     <div class="menu-item">Delete Chat</div>
 </div>
-<script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
 <script>
-    const isLocal =
-        window.location.hostname === "localhost" ||
-        window.location.hostname === "127.0.0.1";
-    if (isLocal) {
-        // Localhost: Socket.IO client comes from Node server
-        const script = document.createElement("script");
-        script.src = "/socket.io/socket.io.js";
-        script.onload = function () {
-            startChatSocket("http://localhost:3000");
-        };
-        document.head.appendChild(script);
-    } else {
-        // GitHub Pages: load Socket.IO client from CDN
-        const script = document.createElement("script");
-        script.src = "https://cdn.socket.io/4.8.1/socket.io.min.js";
-        script.onload = function () {
-            startChatSocket("https://cp-chat.onrender.com");
-        };
-        script.onerror = function () {
-            console.error("Could not load Socket.IO from CDN.");
-        };
-        document.head.appendChild(script);
+const isLocal =
+    window.location.hostname === "localhost" ||
+    window.location.hostname === "127.0.0.1";
+function startChatSocket(serverURL) {
+    if (typeof io === "undefined") {
+        console.error("Socket.IO client is not loaded.");
+        return;
     }
-    function startChatSocket(serverURL) {
-        window.chatSocket = io(serverURL);
-        window.chatSocket.on("connect", function () {
-            console.log("Connected to CP Chat server:", serverURL);
-        });
-        window.chatSocket.on("disconnect", function () {
-            console.log("Disconnected from CP Chat server");
-        });
-        window.chatSocket.on("connect_error", function (error) {
-            console.error("Socket connection error:", error.message);
-        });
-        window.chatSocket.on("chat message", function (msg) {
-            console.log("Message received:", msg);
-            const messages = document.getElementById("messages");
-            if (!messages) return;
-            const newMessage = document.createElement("div");
-            newMessage.className = "sent";
-            const now = new Date();
-            let hours = now.getHours();
-            const minutes = now.getMinutes()
-                .toString()
-                .padStart(2, "0");
-            const period = hours >= 12 ? "PM" : "AM";
-            hours = hours % 12;
-            if (hours === 0) {
-                hours = 12;
-            }
-            newMessage.innerHTML = `
-                <div class="message-text">${msg}</div>
-                <div class="message-info">
-                    ${hours}:${minutes}
-                    <span class="tick">✓✓</span>
-                </div>
-            `;
-            messages.appendChild(newMessage);
-            messages.scrollTop = messages.scrollHeight;
-        });
-    }
+    window.chatSocket = io(serverURL);
+    window.chatSocket.on("connect", function () {
+        console.log("Connected to CP Chat server:", serverURL);
+    });
+    window.chatSocket.on("disconnect", function () {
+        console.log("Disconnected from CP Chat server");
+    });
+    window.chatSocket.on("connect_error", function (error) {
+        console.error("Socket connection error:", error.message);
+    });
+    window.chatSocket.on("chat message", function (msg) {
+        console.log("Message received:", msg);
+        const messages = document.getElementById("messages");
+        if (!messages) return;
+        const newMessage = document.createElement("div");
+        newMessage.className = "sent";
+        const now = new Date();
+        let hours = now.getHours();
+        const minutes = now.getMinutes()
+            .toString()
+            .padStart(2, "0");
+        const period = hours >= 12 ? "PM" : "AM";
+        hours = hours % 12 || 12;
+        newMessage.innerHTML = `
+            <div class="message-text"></div>
+            <div class="message-info">
+                ${hours}:${minutes}
+                <span class="tick">✓✓</span>
+            </div>
+        `;
+        newMessage.querySelector(".message-text").textContent = msg;
+        messages.appendChild(newMessage);
+        messages.scrollTop = messages.scrollHeight;
+    });
+}
+// =====================================
+// LOCALHOST
+// =====================================
+if (isLocal) {
+    const script = document.createElement("script");
+    script.src = "/socket.io/socket.io.js";
+    script.onload = function () {
+        console.log("Local Socket.IO client loaded.");
+        startChatSocket("http://localhost:3000");
+    };
+    script.onerror = function () {
+        console.error(
+            "Could not load Socket.IO from localhost."
+        );
+    };
+    document.head.appendChild(script);
+}
+// =====================================
+// GITHUB PAGES
+// =====================================
+else {
+    const script = document.createElement("script");
+    script.src =
+        "https://cdn.socket.io/4.8.1/socket.io.min.js";
+    script.onload = function () {
+        console.log("CDN Socket.IO client loaded.");
+        startChatSocket(
+            "https://cp-chat.onrender.com"
+        );
+    };
+    script.onerror = function () {
+        console.error(
+            "Could not load Socket.IO CDN."
+        );
+    };
+    document.head.appendChild(script);
+}
 </script>
 <script src="script.js"></script>
 </body>
