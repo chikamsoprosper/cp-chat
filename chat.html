@@ -53,10 +53,6 @@ class="contact-info-btn">
 		id="attachInput"
 		hidden
 		multiple>
-	<input
-	    type="file"
-		id="fileInput"
-		hidden>
     <input
         type="text"
         id="messageInput"
@@ -125,25 +121,6 @@ function startChatSocket(serverURL) {
         console.log("Message received:", msg);
         const messages = document.getElementById("messages");
         if (!messages) return;
-        const newMessage = document.createElement("div");
-        newMessage.className = "sent";
-        const now = new Date();
-        let hours = now.getHours();
-        const minutes = now.getMinutes()
-            .toString()
-            .padStart(2, "0");
-        const period = hours >= 12 ? "PM" : "AM";
-        hours = hours % 12 || 12;
-        newMessage.innerHTML = `
-            <div class="message-text"></div>
-            <div class="message-info">
-                ${hours}:${minutes}
-                <span class="tick">✓✓</span>
-            </div>
-        `;
-        newMessage.querySelector(".message-text").textContent = msg;
-        messages.appendChild(newMessage);
-        messages.scrollTop = messages.scrollHeight;
     });
 }
 // =====================================

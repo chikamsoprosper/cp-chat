@@ -30,6 +30,183 @@ if (forwarded && messageInput) {
     localStorage.removeItem("forwardMessage");
 }
 let messages = document.getElementById("messages");
+if (messages && chatHistory.length > 0) {
+    chatHistory.forEach(function (savedMessage) {
+        if (savedMessage.type === "text") {
+            let oldMessage = document.createElement("div");
+            oldMessage.className = "sent";
+	        oldMessage.dataset.historyIndex = chatHistory.indexOf(savedMessage);		
+            oldMessage.innerHTML = `
+			${savedMessage.reply ? `<div class="reply-box">${savedMessage.reply}</div>` : ""}
+                <div class="message-text"></div>
+                <div class="message-info">
+                    ${savedMessage.time}
+                    <span class="tick">✓✓</span>
+                </div>
+                <div class="reaction"></div>
+            `;
+            oldMessage.querySelector(".message-text").textContent =
+                savedMessage.text;
+            messages.appendChild(oldMessage);
+        // Add message actions to restored messages
+		}
+		if (savedMessage.type === "image") {
+    let oldImage = document.createElement("div");
+    oldImage.className = "sent";
+    oldImage.dataset.historyIndex = chatHistory.indexOf(savedMessage);
+    oldImage.innerHTML = `
+        <img src="${savedMessage.image}" class="chat-image">
+        <div class="message-info">
+            ${savedMessage.time}
+            <span class="tick">✓✓</span>
+        </div>
+        <div class="reaction"></div>
+    `;
+    messages.appendChild(oldImage);
+	addImageActions(oldImage);
+   addExtraImageFeatures(oldImage);
+        let pressTimer;
+        oldMessage.addEventListener("mousedown", function () {
+            pressTimer = setTimeout(function () {
+                let option = prompt(
+                    "Choose:\n1 = Reply\n2 = Edit\n3 = Delete\n4 = Copy\n5 = Forward"
+                );
+                if (option === "1") {
+                    replyMessage =
+                        oldMessage.querySelector(".message-text").textContent;
+                    alert("Replying to: " + replyMessage);
+                }
+                if (option === "2") {
+                    let messageText =
+                        oldMessage.querySelector(".message-text");
+                    let edited = prompt(
+                        "Edit message:",
+                        messageText.textContent
+                    );
+                    if (edited !== null && edited.trim() !== "") {
+                        messageText.textContent = edited;
+                        let historyIndex =
+                            oldMessage.dataset.historyIndex;
+                        if (historyIndex !== undefined) {
+                            chatHistory[Number(historyIndex)].text = edited;
+                            localStorage.setItem(
+                                "chatHistory",
+                                JSON.stringify(chatHistory)
+                            );
+                        }
+                    }
+                }
+                if (option === "3") {
+                    if (confirm("Delete this message?")) {
+                        let historyIndex =
+                            oldMessage.dataset.historyIndex;
+                        if (historyIndex !== undefined) {
+                            chatHistory.splice(
+                                Number(historyIndex),
+                                1
+                            );
+                            localStorage.setItem(
+                                "chatHistory",
+                                JSON.stringify(chatHistory)
+                            );
+                        }
+                        oldMessage.remove();
+                    }
+                }
+                if (option === "4") {
+                    let messageText =
+                        oldMessage.querySelector(".message-text").textContent;
+                    navigator.clipboard.writeText(messageText);
+                    alert("Message copied!");
+                }
+                if (option === "5") {
+                    let messageText =
+                        oldMessage.querySelector(".message-text").textContent;
+                    localStorage.setItem(
+                        "forwardMessage",
+                        messageText
+                    );
+                    alert("Message forwarded!");
+                }
+            }, 700);
+        });
+        oldMessage.addEventListener("mouseup", function () {
+            clearTimeout(pressTimer);
+        });
+        oldMessage.addEventListener("mouseleave", function () {
+            clearTimeout(pressTimer);
+        });
+        oldMessage.addEventListener("touchstart", function () {
+            pressTimer = setTimeout(function () {
+                let option = prompt(
+                    "Choose:\n1 = Reply\n2 = Edit\n3 = Delete\n4 = Copy\n5 = Forward"
+                );
+                if (option === "1") {
+                    replyMessage =
+                        oldMessage.querySelector(".message-text").textContent;
+                    alert("Replying to: " + replyMessage);
+                }
+                if (option === "2") {
+                    let messageText =
+                        oldMessage.querySelector(".message-text");
+                    let edited = prompt(
+                        "Edit message:",
+                        messageText.textContent
+                    );
+                    if (edited !== null && edited.trim() !== "") {
+                        messageText.textContent = edited;
+                        let historyIndex =
+                            oldMessage.dataset.historyIndex;
+                        if (historyIndex !== undefined) {
+                            chatHistory[Number(historyIndex)].text = edited;
+                            localStorage.setItem(
+                                "chatHistory",
+                                JSON.stringify(chatHistory)
+                            );
+                        }
+                    }
+                }
+                if (option === "3") {
+                    if (confirm("Delete this message?")) {
+                        let historyIndex =
+                            oldMessage.dataset.historyIndex;
+                        if (historyIndex !== undefined) {
+                            chatHistory.splice(
+                                Number(historyIndex),
+                                1
+                            );
+                            localStorage.setItem(
+                                "chatHistory",
+                                JSON.stringify(chatHistory)
+                            );
+                        }
+                        oldMessage.remove();
+                    }
+                }
+                if (option === "4") {
+                    let messageText =
+                        oldMessage.querySelector(".message-text").textContent;
+                    navigator.clipboard.writeText(messageText);
+                    alert("Message copied!");
+                }
+                if (option === "5") {
+                    let messageText =
+                        oldMessage.querySelector(".message-text").textContent;
+                    localStorage.setItem(
+                        "forwardMessage",
+                        messageText
+                    );
+                    alert("Message forwarded!");
+                }
+            }, 700);
+        });
+        oldMessage.addEventListener("touchend", function () {
+            clearTimeout(pressTimer);
+        });
+		}
+});
+    messages.scrollTop = messages.scrollHeight;
+}
 if (backBtn) {
     backBtn.addEventListener("click", function () {
         window.location.href = "home.html";
@@ -87,31 +264,54 @@ newMessage.addEventListener("click", function (event) {
 });
 newMessage.addEventListener("mousedown", function () {
     pressTimer = setTimeout(function () {
-        let option = prompt(
-            "Choose:\n1 = Edit\n2 = Delete\n3 = Copy\n4 = Forward"
+       let option = prompt(
+    "Choose:\n1 = Reply\n2 = Edit\n3 = Delete\n4 = Copy\n5 = Forward"
+);
+if (option === "1") {
+    replyMessage = newMessage.querySelector(".message-text").textContent;
+    alert("Replying to: " + replyMessage);
+}
+if (option === "2") {
+    let messageText = newMessage.querySelector(".message-text");
+    let edited = prompt("Edit message:", messageText.textContent);
+    if (edited !== null && edited.trim() !== "") {
+        messageText.textContent = edited;
+  let historyIndex = newMessage.dataset.historyIndex;
+    if (historyIndex !== undefined) {
+        chatHistory[historyIndex].text = edited;
+        localStorage.setItem(
+            "chatHistory",
+            JSON.stringify(chatHistory)
         );
-        if (option === "1") {
-            let messageText = newMessage.querySelector(".message-text");
-            let edited = prompt("Edit message:", messageText.textContent);
-            if (edited !== null && edited.trim() !== "") {
-                messageText.textContent = edited;
-            }
+    }
+}   
+}
+if (option === "3") {
+    if (confirm("Delete this message?")) {
+        let historyIndex = newMessage.dataset.historyIndex;
+        if (historyIndex !== undefined) {
+            chatHistory.splice(Number(historyIndex), 1);
+            localStorage.setItem(
+                "chatHistory",
+                JSON.stringify(chatHistory)
+            );
         }
-        if (option === "2") {
-            if (confirm("Delete this message?")) {
-                newMessage.remove();
-            }
-        }
-        if (option === "3") {
-            let messageText = newMessage.querySelector(".message-text").textContent;
-            navigator.clipboard.writeText(messageText);
-            alert("Message copied!");
-        }
-        if (option === "4") {
-            let messageText = newMessage.querySelector(".message-text").textContent;
-            localStorage.setItem("forwardMessage", messageText);
-            alert("Message forwarded!");
-        }
+        newMessage.remove();
+    }
+}
+if (option === "4") {
+    let messageText =
+        newMessage.querySelector(".message-text").textContent;
+
+    navigator.clipboard.writeText(messageText);
+    alert("Message copied!");
+}
+if (option === "5") {
+    let messageText =
+        newMessage.querySelector(".message-text").textContent;
+    localStorage.setItem("forwardMessage", messageText);
+    alert("Message forwarded!");
+}
     }, 700);
 });
 newMessage.addEventListener("mouseup", function () {
@@ -134,13 +334,30 @@ newMessage.addEventListener("touchstart", function () {
             let edited = prompt("Edit message:", messageText.textContent);
             if (edited !== null && edited.trim() !== "") {
                 messageText.textContent = edited;
-            }
+            let historyIndex =
+            newMessage.dataset.historyIndex;
+        if (historyIndex !== undefined) {
+            chatHistory[Number(historyIndex)].text = edited;
+            localStorage.setItem(
+                "chatHistory",
+                JSON.stringify(chatHistory)
+            );
         }
-        if (option === "3") {
-            if (confirm("Delete this message?")) {
-                newMessage.remove();
-            }
+    }
+}
+       if (option === "3") {
+    if (confirm("Delete this message?")) {
+        let historyIndex = newMessage.dataset.historyIndex;
+        if (historyIndex !== undefined) {
+            chatHistory.splice(Number(historyIndex), 1);
+            localStorage.setItem(
+                "chatHistory",
+                JSON.stringify(chatHistory)
+            );
         }
+        newMessage.remove();
+    }
+}
         if (option === "4") {
             let messageText = newMessage.querySelector(".message-text").textContent;
             navigator.clipboard.writeText(messageText);
@@ -175,6 +392,8 @@ newMessage.addEventListener("click", function (event) {
         "\nStatus: " + status
     );
 });
+messages.appendChild(newMessage);
+messages.scrollTop = messages.scrollHeight;
 if (!window.chatSocket || !window.chatSocket.connected) {
     alert("Not connected to CP Chat server.");
     return;
@@ -183,8 +402,10 @@ if (!window.chatSocket || !window.chatSocket.connected) {
 		chatHistory.push({
     type: "text",
     text: text,
-    time: `${hours}:${minutes} ${period}`
+    time: `${hours}:${minutes} ${period}`,
+	reply: replyMessage || ""
 });
+newMessage.dataset.historyIndex = chatHistory.length - 1;
 localStorage.setItem(
     "chatHistory",
     JSON.stringify(chatHistory)
@@ -200,6 +421,15 @@ setTimeout(function () {
 }, 3000);
         messages.scrollTop = messages.scrollHeight;
         messageInput.value = "";
+		replyMessage = "";
+    });
+}
+if (messageInput) {
+    messageInput.addEventListener("keydown", function (event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            sendBtn.click();
+        }
     });
 }
 let emojiBtn = document.getElementById("emojiBtn");
@@ -338,6 +568,12 @@ let backProfile = document.getElementById("backProfile");
 if (backProfile) {
     backProfile.addEventListener("click", function () {
         window.location.href = "profile.html";
+    });
+}
+let backProfilePage = document.getElementById("backProfilePage");
+if (backProfilePage) {
+    backProfilePage.addEventListener("click", function () {
+        window.location.href = "home.html";
     });
 }
 if (saveProfileBtn) {
@@ -697,6 +933,16 @@ if (sendImageBtn) {
 		addImageActions(imageMessage);
 		addExtraImageFeatures(imageMessage);
         messages.appendChild(imageMessage);
+		chatHistory.push({
+    type: "image",
+    image: selectedImage,
+    time: `${hours}:${minutes} ${period}`
+});
+imageMessage.dataset.historyIndex = chatHistory.length - 1;
+localStorage.setItem(
+    "chatHistory",
+    JSON.stringify(chatHistory)
+);
 		showNotification("cp chat", "Image sent");
         messages.scrollTop = messages.scrollHeight;
 		// Clear forwarded image after sending
@@ -746,9 +992,17 @@ function addImageActions(imageMessage){
         );
         // Delete
         if(option==="1"){
-            if(confirm("Delete image?")){
-                imageMessage.remove();
-            }
+           if(confirm("Delete image?")){
+    let historyIndex = imageMessage.dataset.historyIndex;
+    if (historyIndex !== undefined) {
+        chatHistory.splice(Number(historyIndex), 1);
+        localStorage.setItem(
+            "chatHistory",
+            JSON.stringify(chatHistory)
+        );
+    }
+    imageMessage.remove();
+}
         }
         // Save
         if(option==="2"){
@@ -880,7 +1134,6 @@ if (broadcastBtn) {
         alert("Broadcast feature coming soon!");
     };
 }
-
 const starredBtn = document.getElementById("starredBtn");
 if (starredBtn) {
     starredBtn.onclick = () => {
@@ -957,8 +1210,13 @@ if (signupBtn) {
         signupBtn.disabled = true;
         signupBtn.textContent = "Creating account...";
         try {
+			const backendURL =
+    window.location.hostname === "localhost" ||
+    window.location.hostname === "127.0.0.1"
+        ? "http://localhost:3000"
+        : "https://cp-chat.onrender.com";
             const response = await fetch(
-                "https://cp-chat.onrender.com/signup",
+                `${backendURL}/signup`,
                 {
                     method: "POST",
                     headers: {
