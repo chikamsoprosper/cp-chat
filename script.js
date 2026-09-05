@@ -65,144 +65,6 @@ if (messages && chatHistory.length > 0) {
     messages.appendChild(oldImage);
 	addImageActions(oldImage);
    addExtraImageFeatures(oldImage);
-        let pressTimer;
-        oldMessage.addEventListener("mousedown", function () {
-            pressTimer = setTimeout(function () {
-                let option = prompt(
-                    "Choose:\n1 = Reply\n2 = Edit\n3 = Delete\n4 = Copy\n5 = Forward"
-                );
-                if (option === "1") {
-                    replyMessage =
-                        oldMessage.querySelector(".message-text").textContent;
-                    alert("Replying to: " + replyMessage);
-                }
-                if (option === "2") {
-                    let messageText =
-                        oldMessage.querySelector(".message-text");
-                    let edited = prompt(
-                        "Edit message:",
-                        messageText.textContent
-                    );
-                    if (edited !== null && edited.trim() !== "") {
-                        messageText.textContent = edited;
-                        let historyIndex =
-                            oldMessage.dataset.historyIndex;
-                        if (historyIndex !== undefined) {
-                            chatHistory[Number(historyIndex)].text = edited;
-                            localStorage.setItem(
-                                "chatHistory",
-                                JSON.stringify(chatHistory)
-                            );
-                        }
-                    }
-                }
-                if (option === "3") {
-                    if (confirm("Delete this message?")) {
-                        let historyIndex =
-                            oldMessage.dataset.historyIndex;
-                        if (historyIndex !== undefined) {
-                            chatHistory.splice(
-                                Number(historyIndex),
-                                1
-                            );
-                            localStorage.setItem(
-                                "chatHistory",
-                                JSON.stringify(chatHistory)
-                            );
-                        }
-                        oldMessage.remove();
-                    }
-                }
-                if (option === "4") {
-                    let messageText =
-                        oldMessage.querySelector(".message-text").textContent;
-                    navigator.clipboard.writeText(messageText);
-                    alert("Message copied!");
-                }
-                if (option === "5") {
-                    let messageText =
-                        oldMessage.querySelector(".message-text").textContent;
-                    localStorage.setItem(
-                        "forwardMessage",
-                        messageText
-                    );
-                    alert("Message forwarded!");
-                }
-            }, 700);
-        });
-        oldMessage.addEventListener("mouseup", function () {
-            clearTimeout(pressTimer);
-        });
-        oldMessage.addEventListener("mouseleave", function () {
-            clearTimeout(pressTimer);
-        });
-        oldMessage.addEventListener("touchstart", function () {
-            pressTimer = setTimeout(function () {
-                let option = prompt(
-                    "Choose:\n1 = Reply\n2 = Edit\n3 = Delete\n4 = Copy\n5 = Forward"
-                );
-                if (option === "1") {
-                    replyMessage =
-                        oldMessage.querySelector(".message-text").textContent;
-                    alert("Replying to: " + replyMessage);
-                }
-                if (option === "2") {
-                    let messageText =
-                        oldMessage.querySelector(".message-text");
-                    let edited = prompt(
-                        "Edit message:",
-                        messageText.textContent
-                    );
-                    if (edited !== null && edited.trim() !== "") {
-                        messageText.textContent = edited;
-                        let historyIndex =
-                            oldMessage.dataset.historyIndex;
-                        if (historyIndex !== undefined) {
-                            chatHistory[Number(historyIndex)].text = edited;
-                            localStorage.setItem(
-                                "chatHistory",
-                                JSON.stringify(chatHistory)
-                            );
-                        }
-                    }
-                }
-                if (option === "3") {
-                    if (confirm("Delete this message?")) {
-                        let historyIndex =
-                            oldMessage.dataset.historyIndex;
-                        if (historyIndex !== undefined) {
-                            chatHistory.splice(
-                                Number(historyIndex),
-                                1
-                            );
-                            localStorage.setItem(
-                                "chatHistory",
-                                JSON.stringify(chatHistory)
-                            );
-                        }
-                        oldMessage.remove();
-                    }
-                }
-                if (option === "4") {
-                    let messageText =
-                        oldMessage.querySelector(".message-text").textContent;
-                    navigator.clipboard.writeText(messageText);
-                    alert("Message copied!");
-                }
-                if (option === "5") {
-                    let messageText =
-                        oldMessage.querySelector(".message-text").textContent;
-                    localStorage.setItem(
-                        "forwardMessage",
-                        messageText
-                    );
-                    alert("Message forwarded!");
-                }
-            }, 700);
-        });
-        oldMessage.addEventListener("touchend", function () {
-            clearTimeout(pressTimer);
-        });
 		}
 });
     messages.scrollTop = messages.scrollHeight;
@@ -615,7 +477,7 @@ if (profilePhoto) {
         profilePhoto.src = savedImage;
     }
 }
-let settingsBtn = document.getElementById("settingsBtn");
+let settingsBtn = document.getElementById("settingsNavBtn");
 let backSettings = document.getElementById("backSettings");
 let profileSetting = document.getElementById("profileSetting");
 if (settingsBtn) {
@@ -669,14 +531,14 @@ if (backPrivacy) {
         window.location.href = "settings.html";
     });
 }
-let callsBtn = document.getElementById("callsBtn");
+let callsBtn = document.getElementById("callsNavBtn");
 let backCalls = document.getElementById("backCalls");
 if (callsBtn) {
     callsBtn.addEventListener("click", function () {
         window.location.href = "calls.html";
     });
 }
-let contactsBtn = document.getElementById("contactsBtn");
+let contactsBtn = document.getElementById("contactsNavBtn");
 if (contactsBtn) {
     contactsBtn.addEventListener("click", function () {
         window.location.href = "contacts.html";
