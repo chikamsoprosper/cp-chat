@@ -10,19 +10,21 @@
 <div class="home">
     <div class="top-bar">
         <h2>CP Chat</h2>
-        <button id="profileBtn">👤</button>
-    </div>
-	<!-- Camera Button -->
+		<!-- Camera Button -->
+<div class="chat-actions">
 <button id="cameraTopBtn" class="top-btn">📷</button>
+        <button id="profileBtn">👤</button>
 	<!-- More Options Button -->
 <button id="menuBtn" class="menu-btn">⋮</button>
+    </div>
+</div>
 <!-- Dropdown Menu -->
 <div id="moreMenu" class="more-menu">
     <div class="menu-item" id="newGroupBtn">👥 New Group</div>
     <div class="menu-item" id="broadcastBtn">📢 New Broadcast</div>
     <div class="menu-item" id="starredBtn">⭐ Starred Messages</div>
     <div class="menu-item" id="linkedBtn">📱 Linked Devices</div>
-    <div class="menu-item" id="settingsBtn">⚙️ Settings</div>
+    <div class="menu-item" id="settingsMenuBtn">⚙️ Settings</div>
     <div class="menu-item" id="aboutBtn">ℹ️ About</div>
     <div class="menu-item" id="logoutBtn">🚪 Logout</div>
 </div>
@@ -60,15 +62,15 @@
         💬
         <p>Chats</p>
     </div>
-    <div class="nav-item" id="contactsBtn">
+    <div class="nav-item" id="contactsNavBtn">
         👥
         <p>Contacts</p>
     </div>
-    <div class="nav-item" id="callsBtn">
+    <div class="nav-item" id="callsNavBtn">
         📞
         <p>Calls</p>
     </div>
-    <div class="nav-item" id="settingsBtn">
+    <div class="nav-item" id="settingsNavBtn" onclick="window.location.href='settings.html'">
         ⚙️
         <p>Settings</p>
     </div>
@@ -78,7 +80,6 @@
 </div>
 </div>
 </div>
-<button id="newChatBtn" class="new-chat-btn">➕</button>
 <button id="newChatBtn" class="new-chat-btn">➕</button>
 <script src="script.js"></script>
 </body>
