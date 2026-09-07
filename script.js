@@ -13,11 +13,54 @@ function showNotification(title, body) {
 }
 let replyMessage = "";
 let chatHistory = JSON.parse(localStorage.getItem("chatHistory")) || [];
-// Login Page
+// ===============================
+// CP CHAT LOGIN
+// ===============================
 let loginBtn = document.getElementById("loginBtn");
 if (loginBtn) {
-    loginBtn.addEventListener("click", function () {
-        window.location.href = "home.html";
+    loginBtn.addEventListener("click", async function () {
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value;
+        if (!email || !password) {
+            alert("Please enter your email and password.");
+            return;
+        }
+        loginBtn.disabled = true;
+        loginBtn.textContent = "Logging in...";
+        try {
+            const backendURL =
+                window.location.hostname === "localhost" ||
+                window.location.hostname === "127.0.0.1"
+                    ? "http://localhost:3000"
+                    : "https://cp-chat.onrender.com";
+            const response = await fetch(`${backendURL}/login`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    email: email,
+                    password: password
+                })
+            });
+            const data = await response.json();
+            if (response.ok) {
+                localStorage.setItem("loggedIn", "true");
+                localStorage.setItem("profileName", data.user.name);
+                localStorage.setItem("profileUsername", data.user.username);
+                alert("Login successful!");
+                window.location.href = "home.html";
+            } else {
+                alert(data.message || "Login failed.");
+                loginBtn.disabled = false;
+                loginBtn.textContent = "Login";
+            }
+        } catch (error) {
+            console.error("Login error:", error);
+            alert("Cannot connect to CP Chat server.");
+            loginBtn.disabled = false;
+            loginBtn.textContent = "Login";
+        }
     });
 }
 // Chat Page
