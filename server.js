@@ -3,6 +3,12 @@ const http = require("http");
 const { Server } = require("socket.io");
 const path = require("path");
 const app = express();
+const cors = require("cors");
+app.use(cors({
+    origin: "https://chikamsoprosper.github.io",
+    methods: ["GET", "POST"],
+    allowedHeaders: ["Content-Type"]
+}));
 const server = http.createServer(app);
 const io = new Server(server, {
 	cors: {
